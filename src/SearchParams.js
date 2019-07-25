@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import pet, { ANIMALS } from "@frontendmasters/pet";
+import Results from "./Results";
 import useDropdown from "./useDropdown";
 
 const SearchParams = () => {
@@ -7,8 +8,18 @@ const SearchParams = () => {
   const [breeds, setBreeds] = useState([]);
   const [animal, AnimalDropdown] = useDropdown("Animal", "dog", ANIMALS);
   const [breed, BreedDropdown, setBreed] = useDropdown("Breed", "", breeds);
+  const [pets, setPets] = useState([]); // pets = pets returned from API
 
-  // replaces lifycyle hooks
+  async function requestPets() {
+    const { animals } = await pet.animals({
+      location,
+      breed,
+      type: animal
+    });
+
+    setPets(animals || []); // if nothing comes back, leave as empty array
+  }
+
   useEffect(() => {
     setBreeds([]); // if already breeds when requesting new breeds this clear them out
     setBreed(""); // update breed to be empty string whenever we change breeds
@@ -22,7 +33,12 @@ const SearchParams = () => {
 
   return (
     <div className="search-params">
-      <form action="">
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          requestPets();
+        }}
+      >
         <label htmlFor="location">
           Location
           <input
@@ -37,6 +53,7 @@ const SearchParams = () => {
         <BreedDropdown />
         <button type="submit">Submit</button>
       </form>
+      <Results pets={pets} />
     </div>
   );
 };
