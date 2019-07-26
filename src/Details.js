@@ -2,17 +2,9 @@
 import React from "react";
 import pet from "@frontendmasters/pet";
 import Carousel from "./Carousel";
+import ErrorBoundary from "./ErrorBoundary";
 
 class Details extends React.Component {
-  //   constructor(props) {
-  //     // constructed with properties handed up to React
-  //     super(props); // "call constructor on my parent class, React.Component"
-
-  //     this.state = {
-  //       loading: true
-  //     };
-  //   }
-
   state = { loading: true };
 
   componentDidMount() {
@@ -52,4 +44,10 @@ class Details extends React.Component {
   }
 }
 
-export default Details;
+export default function DetailsWithErrorBoundary(props) {
+  return (
+    <ErrorBoundary>
+      <Details {...props} />
+    </ErrorBoundary>
+  );
+}
